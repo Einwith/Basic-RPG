@@ -1,9 +1,3 @@
-// Cross-browser support for requestAnimationFrame
-var requestAnimationFrame = window.requestAnimationFrame ||
-                            window.mozRequestAnimationFrame ||
-                            window.webkitRequestAnimationFrame ||
-                            window.msRequestAnimationFrame;
-
 // Create the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
@@ -14,21 +8,23 @@ document.body.appendChild(canvas);
 // Background image
 var bgReady = false;
 var bgImage = new Image();
-bgImage.onload = function() {
+bgImage.onload = function () {
     bgReady = true;
 };
 bgImage.src = "images/background.png";
 
+// Hero image
 var heroReady = false;
 var heroImage = new Image();
-heroImage.onload = function() {
+heroImage.onload = function () {
     heroReady = true;
 };
 heroImage.src = "images/hero.png";
 
+// Monster image
 var monsterReady = false;
 var monsterImage = new Image();
-monsterImage.onload = function() {
+monsterImage.onload = function () {
     monsterReady = true;
 };
 monsterImage.src = "images/monster.png";
@@ -66,11 +62,13 @@ var reset = function () {
 
     // Throw the monster somewhere on the screen randomly
     monster.x = 32 + (Math.random() * (canvas.width - 64));
-    monster.y = Math.random() * (canvas.height -64) + 32;
+    monster.y = (Math.random() * (canvas.height - 64)) + 32;
 };
 
 // Update game objects
 var update = function (modifier) {
+   
+    // Hero keyboard control	
     if (38 in keysDown) { // Player holding up
         hero.y -= hero.speed * modifier;
     }
@@ -85,13 +83,8 @@ var update = function (modifier) {
     }
 
     // Are they touching?
-    if (
-        hero.x <= (monster.x + 32)
-        && hero.x >= monster.x -32
-        && hero.y <= (monster.x + 32)
-        && hero.y >= monster.x -32
-    ) {
-        ++monstersCaught;
+    if(hero.x <= monster.x + 32 && hero.x >= monster.x - 32 && hero.y <= monster.y + 32 && hero.y >= monster.y - 32 ) {
+        monstersCaught++;
         reset();
     }
 };
@@ -110,7 +103,7 @@ var render = function () {
         ctx.drawImage(monsterImage, monster.x, monster.y);
     }
 
-    //Score
+    // Score
     ctx.fillStyle = "rgb(250, 250, 250)";
     ctx.font = "24px Helvetica";
     ctx.textAlign = "left";
@@ -130,7 +123,10 @@ var main = function () {
 
     // Request to do this again ASAP
     requestAnimationFrame(main);
-}
+};
+
+// Cross-browser support for requestAnimationFrame
+requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
 
 // Start the game
 var then = Date.now();
